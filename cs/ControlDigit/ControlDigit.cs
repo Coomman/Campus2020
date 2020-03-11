@@ -20,7 +20,7 @@ namespace SRP.ControlDigit
         }
     }
 
-	public static class ControlDigitAlgo
+	public static class ControlDigit
 	{
         public static int Upc(this long number)
         {
@@ -47,6 +47,15 @@ namespace SRP.ControlDigit
             if (checkDigit == 0) return '0';
             if (checkDigit == 1) return 'X';
             return (11 - checkDigit).ToString()[0];
+        }
+
+        public static int Snils(this long number)
+        {
+            int checkSum = number.SumProducts(1, (m => ++m)) % 101;
+
+            return checkSum == 100 
+                ? 0 
+                : checkSum;
         }
     }
 }

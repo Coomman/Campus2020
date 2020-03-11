@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControlDigitAlgo.cs" />
+    <Compile Include="ControlDigit.cs" />
     <Compile Include="Isbn13\UpcExtensions.cs" />
     <Compile Include="Snils\SnilsExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

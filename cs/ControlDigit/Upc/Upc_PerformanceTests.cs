@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using SRP.ControlDigit;
 
 namespace ControlDigit
 {
@@ -35,7 +36,7 @@ namespace ControlDigit
             Console.WriteLine("DoWhile " + sw.Elapsed);
             sw.Restart();
             for (int i = 0; i < count; i++)
-                12345678L.CalculateUpc();
+                12345678L.Upc();
             Console.WriteLine("CleanCode " + sw.Elapsed);
         }
     }

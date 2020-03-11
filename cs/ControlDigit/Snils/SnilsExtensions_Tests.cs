@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using SRP.ControlDigit;
 
 namespace ControlDigit
 {
@@ -22,7 +23,7 @@ namespace ControlDigit
         [TestCase(192168000, ExpectedResult = 62)]
         public int Snils(long x)
         {
-            return x.CalculateSnils();
+            return x.Snils();
         }
     }
 }
