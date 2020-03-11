@@ -9,43 +9,71 @@ namespace BowlingGame
 {
     public class Frame
     {
-        public int Score { get; private set; }
+        private readonly List<int> throws = new List<int>();
 
-        public bool IsSpare { get; private set; }
-        public bool IsStrike { get; private set; }
+        public bool Spare { get; private set; }
+        public bool Strike { get; private set; }
 
-        public Frame(int lastFrameScore = 0)
+        public int AdditionalPoints { get; private set; }
+
+        public bool MakeThrow(int pins)
         {
-            Score = lastFrameScore;
+            throws.Add(pins);
+
+            if (throws.Count() == 1)
+            {
+                if (pins == 10)
+                    Strike = true;
+
+                return Strike;
+            }
+
+            if (throws[0] + pins == 10)
+                Spare = true;
+
+            return true;
         }
 
-        public void MakeThrow(int pins)
+        public void AddPoints(int points)
         {
-            Score += pins;
+            AdditionalPoints += points;
         }
+
+        public int GetScore()
+            => throws.Sum() + AdditionalPoints;
     }
 
     public class Game
     {
-        private bool isSecondThrow;
-
         private readonly List<Frame> frames = new List<Frame>(10) {new Frame()};
+
+        private readonly int[] additionalPointsList = new int[10];
 
         public void Roll(int pins)
         {
-            frames.Last().MakeThrow(pins);
-
-            if (isSecondThrow)
+            for (int i = 0; i < 10; i++)
             {
-                frames.Add(new Frame(frames.Last().Score));
+                if(additionalPointsList[i] > 0)
+                    frames[i].AddPoints(pins);
             }
 
-            isSecondThrow = !isSecondThrow;
+            bool frameEnded = frames.Last().MakeThrow(pins);
+
+            if (!frameEnded)
+                return;
+
+            if (frames.Last().Spare)
+                additionalPointsList[frames.Count - 1] = 1;
+
+            if (frames.Last().Strike)
+                additionalPointsList[frames.Count - 1] = 2;
+
+            frames.Add(new Frame());
         }
 
         public int GetScore()
         {
-            return frames.Last().Score;
+            return frames.Sum(f => f.GetScore());
         }
     }
 
@@ -93,10 +121,33 @@ namespace BowlingGame
             game.GetScore().Should().Be(11);
         }
 
-        //[Test]
-        //public void HaveAdditionalScore_AfterSpare()
-        //{
-        //    game.Roll();
-        //}`
+        [Test]
+        public void HaveAdditionalScore_AfterSpare()
+        {
+            game.Roll(6);
+            game.Roll(4);
+            game.Roll(5);
+
+            game.GetScore().Should().Be(20);
+        }
+
+        [Test]
+        public void HaveCorrectScore_AfterStrikeStrike()
+        {
+            game.Roll(10);
+            game.Roll(10);
+
+            game.GetScore().Should().Be(30);
+        }
+
+        [Test]
+        public void HaveCorrectScore_AfterMultipleStrikes()
+        {
+            game.Roll(10);
+            game.Roll(10);
+            game.Roll(10);
+
+            game.GetScore().Should().Be(60);
+        }
     }
 }
