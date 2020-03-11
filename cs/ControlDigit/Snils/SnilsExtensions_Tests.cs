@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using SRP.ControlDigit;
 
 namespace ControlDigit
 {

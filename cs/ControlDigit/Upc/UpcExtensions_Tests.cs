@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using SRP.ControlDigit;
 
 namespace ControlDigit
 {

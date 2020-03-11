@@ -1,22 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace SRP.ControlDigit
+namespace ControlDigit
 {
     public static class Extensions
     {
-        public static int SumProducts(this long number, int multiplier, Func<int, int> changeMult)
+        public static List<int> GetDigitArray(this long n)
         {
-            int sum = 0;
+            var digits = new List<int>(n == 0L ? 1 : (n > 0L ? 1 : 2) + (int)Math.Log10(Math.Abs((double)n)));
             do
             {
-                var digit = (int)(number % 10);
-                sum += multiplier * digit;
-                multiplier = changeMult(multiplier);
-                number /= 10;
-            } 
-            while (number > 0);
+                digits.Add((int)(n % 10));
+                n /= 10;
+            }
+            while (n > 0);
 
-            return sum;
+            return digits;
+        }
+
+        public static List<int> GetAlternatingArray(this int number, int length, Func<int, int> changeFunc)
+        {
+            var arr = new int[length];
+            for (int i = 0; i < length; i++)
+            {
+                arr[i] = number;
+                number = changeFunc(number);
+            }
+
+            return arr.ToList();
+        }
+
+        public static int InnerProduct(this List<int> digits, List<int> weights, Func<int, int, int> singleOp, Func<int, int, int> rangeOp)
+        {
+            return digits.Zip(weights, singleOp).Aggregate(rangeOp);
         }
     }
 
@@ -24,37 +41,49 @@ namespace SRP.ControlDigit
 	{
         public static int Upc(this long number)
         {
-			int checkDigit = number.SumProducts(3, (m => 4 - m)) % 10;
+            var digits = number.GetDigitArray();
+            var weights = 3.GetAlternatingArray(digits.Count, m => 4 - m);
+
+			int checkDigit = digits.InnerProduct(weights, ((d, m) => d * m), ((x, y) => x + y)) % 10;
 
             return checkDigit == 0
                 ? 0
                 : 10 - checkDigit;
 		}
 
-        public static int Isbn13(this long number)
+        public static int Isbn13(this long n)
         {
-			int checkDigit = number.SumProducts(1, (m => 4 - m)) % 10;
+            var digits = n.GetDigitArray();
+            var weights = 1.GetAlternatingArray(digits.Count, m => 4 - m);
+
+            int checkDigit = digits.InnerProduct(weights, ((d, m) => d * m), ((x, y) => x + y)) % 10;
 
             return checkDigit == 0
                 ? 0
                 : 10 - checkDigit;
         }
 
-        public static int Isbn10(this long number)
+        public static int Isbn10(this long n)
         {
-            int checkDigit = number.SumProducts(2, (m => ++m)) % 11;
+            var digits = n.GetDigitArray();
+            var weights = 2.GetAlternatingArray(digits.Count, (m => ++m));
+
+            int checkDigit = digits.InnerProduct(weights, ((d, m) => d * m), ((x, y) => x + y)) % 11;
 
             if (checkDigit == 0) return '0';
             if (checkDigit == 1) return 'X';
             return (11 - checkDigit).ToString()[0];
         }
 
-        public static int Snils(this long number)
+        public static int Snils(this long n)
         {
-            int checkSum = number.SumProducts(1, (m => ++m)) % 101;
+            var digits = n.GetDigitArray();
+            var weights = 1.GetAlternatingArray(digits.Count, (m => ++m));
 
-            return checkSum == 100 
-                ? 0 
+            int checkSum = digits.InnerProduct(weights, ((d, m) => d * m), ((x, y) => x + y)) % 101;
+
+            return checkSum == 100
+                ? 0
                 : checkSum;
         }
     }
