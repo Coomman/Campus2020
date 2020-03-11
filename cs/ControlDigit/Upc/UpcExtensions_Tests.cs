@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SRP.ControlDigit;
 
 namespace ControlDigit
 {
@@ -23,7 +24,7 @@ namespace ControlDigit
         [TestCase(98439876398, ExpectedResult = 6)]
         public int Upc(long x)
         {
-            return x.CalculateUpc();
+            return x.Upc();
         }
     }
 }
