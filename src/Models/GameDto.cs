@@ -24,5 +24,7 @@ namespace thegame.Models
         public Guid Id;
         public bool IsFinished;
         public int Score;
+
+        //todo switch to properties
     }
 }
