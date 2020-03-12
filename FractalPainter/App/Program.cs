@@ -24,6 +24,20 @@ namespace FractalPainting.App
             container.Bind<IUiAction>().To<DragonFractalAction>();
         }
 
+        private static void ImageSettingsLoad(StandardKernel container)
+        {
+            container.Bind<IObjectSerializer>().To<XmlObjectSerializer>();
+            container.Bind<IBlobStorage>().To<FileBlobStorage>();
+
+            container.Bind<AppSettings, IImageDirectoryProvider>()
+                .ToMethod(context => context.Kernel.Get<SettingsManager>().Load())
+                .InSingletonScope();
+
+            container.Bind<ImageSettings>()
+                .ToMethod(context => context.Kernel.Get<AppSettings>().ImageSettings)
+                .InSingletonScope();
+        }
+
         private static StandardKernel Load()
         {
             var container = new StandardKernel();
@@ -32,6 +46,7 @@ namespace FractalPainting.App
 
             KochLoad(container);
             DragonLoad(container);
+            ImageSettingsLoad(container);
 
             container.Bind<IUiAction>().To<ImageSettingsAction>();
             container.Bind<IUiAction>().To<PaletteSettingsAction>();
@@ -58,6 +73,7 @@ namespace FractalPainting.App
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
+                throw;
             }
         }
     }
