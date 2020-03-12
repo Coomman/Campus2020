@@ -36,11 +36,12 @@ namespace FileSender
 
         private bool TrySendFile(File file, X509Certificate certificate)
         {
-            Document document;
-            if (!recognizer.TryRecognize(file, out document))
+            if (!recognizer.TryRecognize(file, out var document))
                 return false;
+
             if (!CheckFormat(document) || !CheckActual(document))
                 return false;
+
             var signedContent = cryptographer.Sign(document.Content, certificate);
             return sender.TrySend(signedContent);
         }
