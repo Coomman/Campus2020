@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using FakeItEasy;
 using FileSender.Dependencies;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace FileSender
@@ -14,10 +14,7 @@ namespace FileSender
         private readonly ISender sender;
         private readonly IRecognizer recognizer;
 
-        public FileSender(
-            ICryptographer cryptographer,
-            ISender sender,
-            IRecognizer recognizer)
+        public FileSender(ICryptographer cryptographer, ISender sender, IRecognizer recognizer)
         {
             this.cryptographer = cryptographer;
             this.sender = sender;
@@ -51,7 +48,6 @@ namespace FileSender
             return document.Format == "4.0" ||
                    document.Format == "3.1";
         }
-
         private bool CheckActual(Document document)
         {
             return document.Created.AddMonths(1) > DateTime.Now;
@@ -63,7 +59,6 @@ namespace FileSender
         }
     }
 
-    //TODO: реализовать недостающие тесты
     [TestFixture]
     public class FileSender_Should
     {
@@ -79,10 +74,6 @@ namespace FileSender
         [SetUp]
         public void SetUp()
         {
-            // Постарайтесь вынести в SetUp всё неспецифическое конфигурирование так,
-            // чтобы в конкретных тестах осталась только специфика теста,
-            // без конфигурирования "обычного" сценария работы
-
             file = new File("someFile", new byte[] {1, 2, 3});
             signedContent = new byte[] {1, 7};
 
@@ -92,69 +83,81 @@ namespace FileSender
             fileSender = new FileSender(cryptographer, sender, recognizer);
         }
 
-        [TestCase("4.0")]
-        [TestCase("3.1")]
-        public void Send_WhenGoodFormat(string format)
+        public static IEnumerable<TestCaseData> GetOneFileTestCases()
         {
-            var document = new Document(file.Name, file.Content, DateTime.Now, format);
+            yield return new TestCaseData(
+                    new FileSenderTc(DateTime.Now))
+                .Returns(false).SetName("Send_WhenGoodFormat_3.1");
+
+            yield return new TestCaseData(
+                    new FileSenderTc(DateTime.Now, "4.0"))
+                .Returns(false).SetName("Send_WhenGoodFormat_4.0");
+
+            yield return new TestCaseData(
+                    new FileSenderTc(DateTime.Now, "2.0", true, false))
+                .Returns(true).SetName("Skip_WhenBadFormat");
+
+            yield return new TestCaseData(
+                    new FileSenderTc(DateTime.Now, "3.1", false))
+                .Returns(true).SetName("Skip_WhenNotRecognized");
+        }
+
+        public static IEnumerable<TestCaseData> GetMultipleFilesTestCases()
+        {
+            var correctFileCase = new FileSenderTc(DateTime.Now);
+            var invalidFileCase = new FileSenderTc(DateTime.Now, "2.0", false);
+            var notSentFileCase = new FileSenderTc(DateTime.Now, sent: false);
+
+            yield return new TestCaseData(
+                    (object) new[]
+                        {correctFileCase, correctFileCase, invalidFileCase, correctFileCase, invalidFileCase})
+                .Returns(true).SetName("IndependentlySend_WhenSeveralFilesAndSomeAreInvalid");
+
+            yield return new TestCaseData(
+                    (object) new[]
+                        {correctFileCase, notSentFileCase, correctFileCase, correctFileCase, notSentFileCase})
+                .Returns(true).SetName("IndependentlySend_WhenSeveralFilesAndSomeCouldNotSend");
+        }
+
+
+        [TestCaseSource(nameof(GetOneFileTestCases))]
+        public bool OneFileTests(FileSenderTc testFile)
+        {
+            var document = 
+                new Document(file.Name, file.Content, testFile.CreationDate, testFile.Format);
+
             A.CallTo(() => recognizer.TryRecognize(file, out document))
-                .Returns(true);
+                .Returns(testFile.Recognized);
             A.CallTo(() => cryptographer.Sign(document.Content, certificate))
                 .Returns(signedContent);
             A.CallTo(() => sender.TrySend(signedContent))
-                .Returns(true);
+                .Returns(testFile.Sent);
 
-            fileSender.SendFiles(new[] {file}, certificate)
-                .SkippedFiles.Should().BeEmpty();
+            return fileSender.SendFiles(new[] {file}, certificate)
+                .SkippedFiles.Any();
         }
 
-        [Test]
-        [Ignore("Not implemented")]
-        public void Skip_WhenBadFormat()
+        [TestCaseSource(nameof(GetMultipleFilesTestCases))]
+        public bool MultipleFilesTests(FileSenderTc[] testFiles)
         {
-            throw new NotImplementedException();
-        }
+            int skipFilesCount = 0;
+            foreach (var tf in testFiles)
+            {
+                var doc = 
+                    new Document(file.Name, file.Content, tf.CreationDate, tf.Format);
 
-        [Test]
-        [Ignore("Not implemented")]
-        public void Skip_WhenOlderThanAMonth()
-        {
-            throw new NotImplementedException();
-        }
+                A.CallTo(() => recognizer.TryRecognize(file, out doc))
+                    .Returns(tf.Recognized);
+                A.CallTo(() => cryptographer.Sign(doc.Content, certificate))
+                    .Returns(signedContent);
+                A.CallTo(() => sender.TrySend(signedContent))
+                    .Returns(tf.Sent);
 
-        [Test]
-        [Ignore("Not implemented")]
-        public void Send_WhenYoungerThanAMonth()
-        {
-            throw new NotImplementedException();
-        }
+                if (fileSender.SendFiles(new[] {file}, certificate).SkippedFiles.Any())
+                    skipFilesCount++;
+            }
 
-        [Test]
-        [Ignore("Not implemented")]
-        public void Skip_WhenSendFails()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        [Ignore("Not implemented")]
-        public void Skip_WhenNotRecognized()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        [Ignore("Not implemented")]
-        public void IndependentlySend_WhenSeveralFilesAndSomeAreInvalid()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        [Ignore("Not implemented")]
-        public void IndependentlySend_WhenSeveralFilesAndSomeCouldNotSend()
-        {
-            throw new NotImplementedException();
+            return skipFilesCount != testFiles.Length;
         }
     }
 }

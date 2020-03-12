@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Dependencies\Document.cs" />
     <Compile Include="Dependencies\File.cs" />
+    <Compile Include="Dependencies\FileSenderTC.cs" />
     <Compile Include="Dependencies\ICryptographer.cs" />
     <Compile Include="Dependencies\IRecognizer.cs" />
     <Compile Include="Dependencies\ISender.cs" />
