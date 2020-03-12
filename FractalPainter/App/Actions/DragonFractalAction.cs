@@ -11,10 +11,12 @@ namespace FractalPainting.App.Actions
     {
         private DragonPainter dragonPainter;
         private readonly IDragonPainterFactory dpFactory;
+        private readonly Func<Random, DragonSettingsGenerator> dsFactory;
 
-        public DragonFractalAction(IDragonPainterFactory dpFactory)
+        public DragonFractalAction(IDragonPainterFactory dpFactory, Func<Random, DragonSettingsGenerator> dsFactory)
         {
             this.dpFactory = dpFactory;
+            this.dsFactory = dsFactory;
         }
 
         public string Category => "Фракталы";
@@ -30,9 +32,9 @@ namespace FractalPainting.App.Actions
             dragonPainter.Paint();
         }
 
-        private static DragonSettings CreateRandomSettings()
+        private DragonSettings CreateRandomSettings()
         {
-            return new DragonSettingsGenerator(new Random()).Generate();
+            return dsFactory.Invoke(new Random()).Generate();
         }
     }
 }
