@@ -5,22 +5,33 @@ using FractalPainting.App.Fractals;
 using FractalPainting.Infrastructure.Common;
 using FractalPainting.Infrastructure.UiActions;
 using Ninject;
+using Ninject.Extensions.Factory;
 
 namespace FractalPainting.App
 {
     internal static class Program
     {
-        public static StandardKernel Load()
+        private static void KochLoad(StandardKernel container)
+        {
+            container.Bind<IImageHolder, PictureBoxImageHolder>().To<PictureBoxImageHolder>().InSingletonScope();
+            container.Bind<Palette>().ToSelf().InSingletonScope();
+            container.Bind<IUiAction>().To<KochFractalAction>();
+        }
+
+        private static void DragonLoad(StandardKernel container)
+        {
+            container.Bind<IDragonPainterFactory>().ToFactory();
+            container.Bind<IUiAction>().To<DragonFractalAction>();
+        }
+
+        private static StandardKernel Load()
         {
             var container = new StandardKernel();
 
             container.Bind<IUiAction>().To<SaveImageAction>();
-            container.Bind<IUiAction>().To<DragonFractalAction>();
 
-            container.Bind<IImageHolder, PictureBoxImageHolder>().To<PictureBoxImageHolder>().InSingletonScope();
-            container.Bind<Palette>().ToSelf().InSingletonScope();
-            container.Bind<KochPainter>().ToSelf().InSingletonScope();
-            container.Bind<IUiAction>().To<KochFractalAction>();
+            KochLoad(container);
+            DragonLoad(container);
 
             container.Bind<IUiAction>().To<ImageSettingsAction>();
             container.Bind<IUiAction>().To<PaletteSettingsAction>();
