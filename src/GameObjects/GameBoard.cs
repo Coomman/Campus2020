@@ -12,6 +12,9 @@ namespace thegame.GameObjects
 
         public int Score { get; private set; }
 
+        private bool GameOver { get; set; }
+        private bool WinGame { get; set; }
+
         public int Width => Board.GetLength(0);
         public int Height => Board.GetLength(1);
 
@@ -36,7 +39,7 @@ namespace thegame.GameObjects
             }
 
             if (q.Count == 0)
-                return false;
+                return false; //Todo lose game
 
             int index = 0;
             int cur = line[index] = q.Dequeue();
@@ -47,9 +50,15 @@ namespace thegame.GameObjects
                 if (cur == next)
                 {
                     line[index++] = cur + 1;
-                    
-                    if(!isFake)
-                        Score += (int) Math.Pow(2, line[index - 1]);
+
+                    if (!isFake)
+                    {
+                        int score = (int) Math.Pow(2, line[index - 1]);
+                        Score += score;
+
+                        if (score == 2048)
+                            WinGame = true;
+                    }
 
                     if (q.Count == 0)
                         break;
@@ -62,12 +71,12 @@ namespace thegame.GameObjects
                 cur = line[index] = next;
             }
 
-            return line.SequenceEqual(clone);
+            return line.SequenceEqual(clone); //if line is not locked => true
         }
 
         public bool MoveUp(bool isFake = false)
         {
-            var locked = false;
+            var locked = true;
 
             for (int i = 0; i < Width; i++)
             {
@@ -75,7 +84,7 @@ namespace thegame.GameObjects
                 for (int j = 0; j < Height; j++)
                     arr[j] = Board[i, j];
 
-                locked |= ManageLine(arr, isFake);
+                locked |= ManageLine(arr, isFake); //if true then free line
 
                 if (isFake)
                     continue;
@@ -155,11 +164,15 @@ namespace thegame.GameObjects
 
         public bool GameOverCheck()
         {
-            return !MoveUp(true) && !MoveDown(true) && !MoveLeft(true) && !MoveRight(true);
+            return MoveUp(true) && MoveDown(true) && MoveLeft(true) && MoveRight(true);
         }
 
         public void CreateRandomGameCell()
         {
+            GameOver = GameOverCheck();
+            if (GameOver)
+                return;
+
             var availableCells = new List<Tuple<int, int>>();
             for (var i = 0; i < Board.GetLength(0); i++)
             for (var j = 0; j < Board.GetLength(1); j++)
@@ -191,7 +204,7 @@ namespace thegame.GameObjects
             return new GameDto(board.ToArray(),
                 true, false,
                 Width, Height,
-                Guid.Empty, GameOverCheck(), Score);
+                Guid.Empty, GameOver || WinGame, Score);
         }
     }
 

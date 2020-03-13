@@ -42,6 +42,7 @@ namespace thegame.GameObjects
             var dir = _keyBinds[key];
 
             MakeMove(dir);
+
             _gameBoard.CreateRandomGameCell();
         }
 
