@@ -14,6 +14,10 @@ namespace thegame.GameObjects
             _board = new int[width, height];
         }
 
+        public bool[] TryAllMoves()
+        {
+            throw new NotImplementedException();
+        }
         public bool TryMoveUp()
         {
             throw new NotImplementedException();
