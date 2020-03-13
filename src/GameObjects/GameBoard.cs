@@ -48,7 +48,7 @@ namespace thegame.GameObjects
         }
         public bool GameOverCheck()
         {
-            throw new NotImplementedException();
+            return TryMoveDown(true) || TryMoveUp(true) || TryMoveLeft(true) || TryMoveRight(true);
         }
         public void CreateGameCell()
         {
