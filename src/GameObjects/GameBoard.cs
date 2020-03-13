@@ -7,11 +7,23 @@ namespace thegame.GameObjects
 {
     public class GameBoard
     {
+        enum Direction
+        {
+            Up,
+            Down,
+            Left,
+            Right
+        }
+
         private int[,] _board;
 
         public GameBoard(int width, int height)
         {
             _board = new int[width, height];
+        }
+        public void MakeMove()
+        {
+            throw new NotImplementedException();
         }
 
         public bool[] TryAllMoves()
