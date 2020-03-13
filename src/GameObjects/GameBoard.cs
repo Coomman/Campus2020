@@ -21,125 +21,141 @@ namespace thegame.GameObjects
 
         #region moves
 
-        public static bool TryMoveArray(int[] row, bool isFake, out int[] shiftRow)
-        {
-            shiftRow = (int[]) row.Clone();
-            for (var i = row.Length - 1; i >= 0; i--)
-            {
-                if (row[i] == 0 && isFake)
-                    return true;
-                for (var j = i; j < row.Length - 1; j++)
-                {
-                    if (row[j] != row[j + 1]) continue;
-                    row[j + 1] += 1;
-                    shiftRow[j] = 0;
-                    if (isFake)
-                        return true;
-                }
-            }
+        //public static bool TryMoveArray(int[] row, bool isFake, out int[] shiftRow)
+        //{
+        //    shiftRow = (int[]) row.Clone();
+        //    for (var i = row.Length - 1; i >= 0; i--)
+        //    {
+        //        if (row[i] == 0 && isFake)
+        //            return true;
+        //        for (var j = i; j < row.Length - 1; j++)
+        //        {
+        //            if (row[j] != row[j + 1]) continue;
+        //            row[j + 1] += 1;
+        //            shiftRow[j] = 0;
+        //            if (isFake)
+        //                return true;
+        //        }
+        //    }
 
-            return !isFake;
-        }
+        //    return !isFake;
+        //}
 
+
+        //public bool MoveUp(bool isFake = false)
+        //{
+        //    var localBoard = (int[,]) Board.Clone();
+        //    for (var i = 1; i < localBoard.GetLength(0); i++)
+        //    {
+        //        var row = new int[localBoard.GetLength(1)];
+        //        for (var j = 0; j < localBoard.GetLength(1); j++)
+        //            row[j] = localBoard[j, i];
+
+        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
+        //        if (isFake)
+        //            return true;
+        //        for (var j = 0; j < localBoard.GetLength(1); j++)
+        //            localBoard[j, i] = row[j];
+        //    }
+
+        //    if (isFake)
+        //        return false;
+        //    Board = (int[,]) localBoard.Clone();
+        //    return true;
+        //}
+
+        //public bool MoveLeft(bool isFake = false)
+        //{
+        //    var localBoard = (int[,]) Board.Clone();
+        //    for (var i = 1; i < localBoard.GetLength(1); i++)
+        //    {
+        //        var row = new int[localBoard.GetLength(0)];
+        //        for (var j = 0; j < localBoard.GetLength(0); j++)
+        //            row[j] = localBoard[i, j];
+
+        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
+        //        if (isFake)
+        //            return true;
+        //        for (var j = 0; j < localBoard.GetLength(0); j++)
+        //            localBoard[i, j] = row[j];
+        //    }
+
+        //    if (isFake)
+        //        return false;
+        //    Board = (int[,]) localBoard.Clone();
+        //    return true;
+        //}
+
+        //public bool MoveDown(bool isFake = false)
+        //{
+        //    var localBoard = (int[,]) Board.Clone();
+        //    for (var i = 1; i < localBoard.GetLength(0); i++)
+        //    {
+        //        var row = new int[localBoard.GetLength(1)];
+        //        for (var j = 0; j < localBoard.GetLength(1); j++)
+        //            row[j] = localBoard[localBoard.GetLength(1) - j - 1, i];
+
+        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
+        //        if (isFake)
+        //            return true;
+        //        for (var j = 0; j < localBoard.GetLength(1); j++)
+        //            localBoard[localBoard.GetLength(1) - j - 1, i] = row[j];
+        //    }
+
+        //    if (isFake)
+        //        return false;
+        //    Board = (int[,]) localBoard.Clone();
+        //    return true;
+        //}
+
+        //public bool MoveRight(bool isFake = false)
+        //{
+        //    var localBoard = (int[,]) Board.Clone();
+        //    for (var i = 1; i < localBoard.GetLength(1); i++)
+        //    {
+        //        var row = new int[localBoard.GetLength(0)];
+        //        for (var j = 0; j < localBoard.GetLength(0); j++)
+        //            row[j] = localBoard[i, localBoard.GetLength(0) - j - 1];
+
+        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
+        //        if (isFake)
+        //            return true;
+        //        for (var j = 0; j < localBoard.GetLength(0); j++)
+        //            localBoard[i, localBoard.GetLength(0) - j - 1] = row[j];
+        //    }
+
+        //    if (isFake)
+        //        return false;
+        //    Board = (int[,]) localBoard.Clone();
+        //    return true;
+        //}
 
         public bool MoveUp(bool isFake = false)
         {
-            var localBoard = (int[,]) Board.Clone();
-            for (var i = 1; i < localBoard.GetLength(0); i++)
-            {
-                var row = new int[localBoard.GetLength(1)];
-                for (var j = 0; j < localBoard.GetLength(1); j++)
-                    row[j] = localBoard[j, i];
-
-                if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-                if (isFake)
-                    return true;
-                for (var j = 0; j < localBoard.GetLength(1); j++)
-                    localBoard[j, i] = row[j];
-            }
-
-            if (isFake)
-                return false;
-            Board = (int[,]) localBoard.Clone();
+            Board = new int[Width, Height];
             return true;
         }
-
-        public bool MoveLeft(bool isFake = false)
-        {
-            var localBoard = (int[,]) Board.Clone();
-            for (var i = 1; i < localBoard.GetLength(1); i++)
-            {
-                var row = new int[localBoard.GetLength(0)];
-                for (var j = 0; j < localBoard.GetLength(0); j++)
-                    row[j] = localBoard[i, j];
-
-                if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-                if (isFake)
-                    return true;
-                for (var j = 0; j < localBoard.GetLength(0); j++)
-                    localBoard[i, j] = row[j];
-            }
-
-            if (isFake)
-                return false;
-            Board = (int[,]) localBoard.Clone();
-            return true;
-        }
-
-        public bool MoveDown(bool isFake = false)
-        {
-            var localBoard = (int[,]) Board.Clone();
-            for (var i = 1; i < localBoard.GetLength(0); i++)
-            {
-                var row = new int[localBoard.GetLength(1)];
-                for (var j = 0; j < localBoard.GetLength(1); j++)
-                    row[j] = localBoard[localBoard.GetLength(1) - j - 1, i];
-
-                if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-                if (isFake)
-                    return true;
-                for (var j = 0; j < localBoard.GetLength(1); j++)
-                    localBoard[localBoard.GetLength(1) - j - 1, i] = row[j];
-            }
-
-            if (isFake)
-                return false;
-            Board = (int[,]) localBoard.Clone();
-            return true;
-        }
-
         public bool MoveRight(bool isFake = false)
         {
-            var localBoard = (int[,]) Board.Clone();
-            for (var i = 1; i < localBoard.GetLength(1); i++)
-            {
-                var row = new int[localBoard.GetLength(0)];
-                for (var j = 0; j < localBoard.GetLength(0); j++)
-                    row[j] = localBoard[i, localBoard.GetLength(0) - j - 1];
-
-                if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-                if (isFake)
-                    return true;
-                for (var j = 0; j < localBoard.GetLength(0); j++)
-                    localBoard[i, localBoard.GetLength(0) - j - 1] = row[j];
-            }
-
-            if (isFake)
-                return false;
-            Board = (int[,]) localBoard.Clone();
+            Board = new int[Width, Height];
             return true;
+        }
+        public bool MoveLeft(bool isFake = false)
+        {
+            Board = new int[Width, Height];
+            return true;
+        }
+        public bool MoveDown(bool isFake = false)
+        {
+            Board = new int[Width, Height];
+            return false;
         }
 
         #endregion
 
-        public bool GameOverCheck(bool[] possibleMoves)
+        public bool GameOverCheck()
         {
-            possibleMoves[(int) Direction.Up] = MoveUp(true);
-            possibleMoves[(int) Direction.Down] = MoveDown(true);
-            possibleMoves[(int) Direction.Left] = MoveLeft(true);
-            possibleMoves[(int) Direction.Right] = MoveRight(true);
-
-            return possibleMoves.Contains(true);
+            return !MoveUp(true) && !MoveDown(true) && !MoveLeft(true) && !MoveRight(true);
         }
 
 
@@ -156,7 +172,7 @@ namespace thegame.GameObjects
             Board[width, height] = rnd.Next(4) != 0 ? 1 : 2;
         }
 
-        public CellDto[] ToDto()
+        public GameDto ToDto()
         {
             var board = new List<CellDto>(Width * Height);
             for (int i = 0; i < Width; i++)
@@ -167,13 +183,16 @@ namespace thegame.GameObjects
 
                     board.Add(new CellDto($"{i},{j}",
                         new Vec(i, j),
-                        Board[i, j] == 0 ? "field1": $"tile-{num}",
+                        Board[i, j] == 0 ? "field": $"tile-{num}",
                         Board[i,j] == 0 ? "" : num, 
                         0));
                 }
             }
 
-            return board.ToArray();
+            return new GameDto(board.ToArray(),
+                true, false,
+                Width, Height,
+                Guid.Empty, GameOverCheck(), Score);
         }
     }
 

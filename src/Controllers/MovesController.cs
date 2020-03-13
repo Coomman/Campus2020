@@ -14,7 +14,9 @@ namespace thegame.Controllers
         [HttpPost]
         public IActionResult Moves(Guid gameId, [FromBody]UserInputForMovesPost userInput)
         {
-            //Op.GameTick(userInput.KeyPressed);
+            var key = (int)userInput.KeyPressed;
+            if (key < 41 && key > 36)
+                Op.GameTick(userInput.KeyPressed);
 
             return new ObjectResult(Board.ToDto());
         }

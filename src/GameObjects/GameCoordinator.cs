@@ -8,8 +8,7 @@ namespace thegame.GameObjects
     {
         private GameBoard _gameBoard;
 
-        private readonly bool[] _possibleMoves;
-        public bool GameOver { get; private set; }
+        //private readonly bool[] _possibleMoves;
 
         private readonly Dictionary<char, Direction> _keyBinds = new Dictionary<char, Direction>
         {
@@ -21,7 +20,7 @@ namespace thegame.GameObjects
 
         public GameCoordinator()
         {
-            _possibleMoves = Enumerable.Repeat(true, 4).ToArray();
+            //_possibleMoves = Enumerable.Repeat(true, 4).ToArray();
         }
 
         private void MakeMove(Direction dir)
@@ -48,18 +47,17 @@ namespace thegame.GameObjects
         public void GameTick(char key)
         {
             var dir = _keyBinds[key];
-            if (!_possibleMoves[(int) dir])
-                return;
+            //if (!_possibleMoves[(int) dir])
+            //    return;
 
             MakeMove(dir);
-
-            if(_gameBoard.GameOverCheck(_possibleMoves))
-                GameOver = true;
+            _gameBoard.CreateRandomGameCell();
         }
 
         public GameBoard StartGame(int width, int height)
         {
             _gameBoard = new GameBoard(width, height);
+
             _gameBoard.CreateRandomGameCell();
             _gameBoard.CreateRandomGameCell();
 

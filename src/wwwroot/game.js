@@ -68,6 +68,8 @@ function updateField(game) {
         },
         300);
 
+    console.log(game);
+
     const cells = game.cells;
     const existedCells = {};
     for (let newCell of cells) {
