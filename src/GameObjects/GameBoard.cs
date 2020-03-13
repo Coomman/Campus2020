@@ -11,8 +11,8 @@ namespace thegame.GameObjects
 
         public int Score { get; private set; }
 
-        public int Width => _board.GetLength(0);
-        public int Height => _board.GetLength(1);
+        public int Width => Board.GetLength(0);
+        public int Height => Board.GetLength(1);
 
         public GameBoard(int width, int height)
         {
@@ -165,8 +165,8 @@ namespace thegame.GameObjects
                 {
                     board.Add(new CellDto($"{i},{j}",
                         new Vec(i, j),
-                        _board[i, j].ToString(),
-                        ((int)Math.Pow(2, _board[i, j])).ToString(), 
+                        Board[i, j].ToString(),
+                        ((int)Math.Pow(2, Board[i, j])).ToString(), 
                         0));
                 }
             }
