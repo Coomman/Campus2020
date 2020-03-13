@@ -46,7 +46,7 @@ namespace thegame.GameObjects
         {
             throw new NotImplementedException();
         }
-        public bool GameOverCheck()
+        public bool GameOverCheck(ref bool[] check)
         {
             return TryMoveDown(true) || TryMoveUp(true) || TryMoveLeft(true) || TryMoveRight(true);
         }
