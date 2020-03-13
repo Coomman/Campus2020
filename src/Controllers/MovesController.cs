@@ -14,7 +14,7 @@ namespace thegame.Controllers
         [HttpPost]
         public IActionResult Moves(Guid gameId, [FromBody]UserInputForMovesPost userInput)
         {
-            Op.GameTick(userInput.KeyPressed);
+            //Op.GameTick(userInput.KeyPressed);
 
             return new ObjectResult(Board.ToDto());
         }

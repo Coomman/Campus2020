@@ -1,24 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Bobolink\\team2\\GameObjectTest\\GameObjectTest.csproj": {}
+    "C:\\Git\\hakaton_campus\\GameObjectTest\\GameObjectTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Bobolink\\team2\\GameObjectTest\\GameObjectTest.csproj": {
+    "C:\\Git\\hakaton_campus\\GameObjectTest\\GameObjectTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Bobolink\\team2\\GameObjectTest\\GameObjectTest.csproj",
+        "projectUniqueName": "C:\\Git\\hakaton_campus\\GameObjectTest\\GameObjectTest.csproj",
         "projectName": "GameObjectTest",
-        "projectPath": "C:\\Users\\Bobolink\\team2\\GameObjectTest\\GameObjectTest.csproj",
-        "packagesPath": "C:\\Users\\Bobolink\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Bobolink\\team2\\GameObjectTest\\obj\\",
+        "projectPath": "C:\\Git\\hakaton_campus\\GameObjectTest\\GameObjectTest.csproj",
+        "packagesPath": "C:\\Users\\rauba\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\hakaton_campus\\GameObjectTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Bobolink\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\rauba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.1"
@@ -30,8 +32,8 @@
         "frameworks": {
           "netcoreapp2.1": {
             "projectReferences": {
-              "C:\\Users\\Bobolink\\team2\\src\\thegame.csproj": {
-                "projectPath": "C:\\Users\\Bobolink\\team2\\src\\thegame.csproj"
+              "C:\\Git\\hakaton_campus\\src\\thegame.csproj": {
+                "projectPath": "C:\\Git\\hakaton_campus\\src\\thegame.csproj"
               }
             }
           }
@@ -77,25 +79,28 @@
             "net48"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Bobolink\\team2\\src\\thegame.csproj": {
+    "C:\\Git\\hakaton_campus\\src\\thegame.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Bobolink\\team2\\src\\thegame.csproj",
+        "projectUniqueName": "C:\\Git\\hakaton_campus\\src\\thegame.csproj",
         "projectName": "thegame",
-        "projectPath": "C:\\Users\\Bobolink\\team2\\src\\thegame.csproj",
-        "packagesPath": "C:\\Users\\Bobolink\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Bobolink\\team2\\src\\obj\\",
+        "projectPath": "C:\\Git\\hakaton_campus\\src\\thegame.csproj",
+        "packagesPath": "C:\\Users\\rauba\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\hakaton_campus\\src\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Bobolink\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\rauba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.1"
@@ -138,7 +143,8 @@
             "net48"
           ],
           "assetTargetFallback": true,
-          "warn": true
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

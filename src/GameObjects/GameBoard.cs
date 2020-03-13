@@ -163,10 +163,12 @@ namespace thegame.GameObjects
             {
                 for (int j = 0; j < Height; j++)
                 {
+                    var num = ((int) Math.Pow(2, Board[i, j])).ToString();
+
                     board.Add(new CellDto($"{i},{j}",
                         new Vec(i, j),
-                        Board[i, j].ToString(),
-                        ((int)Math.Pow(2, Board[i, j])).ToString(), 
+                        Board[i, j] == 0 ? "field1": $"tile-{num}",
+                        Board[i,j] == 0 ? "" : num, 
                         0));
                 }
             }

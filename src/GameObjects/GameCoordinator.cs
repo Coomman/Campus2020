@@ -60,6 +60,9 @@ namespace thegame.GameObjects
         public GameBoard StartGame(int width, int height)
         {
             _gameBoard = new GameBoard(width, height);
+            _gameBoard.CreateRandomGameCell();
+            _gameBoard.CreateRandomGameCell();
+
             return _gameBoard;
         }
     }
