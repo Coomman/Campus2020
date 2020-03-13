@@ -7,14 +7,6 @@ namespace thegame.GameObjects
 {
     public class GameBoard
     {
-        enum Direction
-        {
-            Up,
-            Down,
-            Left,
-            Right
-        }
-
         private int[,] _board;
 
         public GameBoard(int width, int height)
@@ -96,10 +88,16 @@ namespace thegame.GameObjects
             throw new NotImplementedException();
         }
 
-        public bool GameOverCheck()
+        public bool GameOverCheck(bool[] possibleMoves)
         {
-            throw new NotImplementedException();
+            possibleMoves[(int) Direction.Up] = MoveUp(true);
+            possibleMoves[(int) Direction.Down] = MoveDown(true);
+            possibleMoves[(int) Direction.Left] = MoveLeft(true);
+            possibleMoves[(int) Direction.Right] = MoveRight(true);
+
+            return possibleMoves.Contains(true);
         }
+
 
         public void CreateGameCell()
         {
@@ -113,5 +111,13 @@ namespace thegame.GameObjects
             var (width, height) = availableCells[rnd.Next(availableCells.Count - 1)];
             _board[width, height] = rnd.Next(4) != 0 ? 1 : 2;
         }
+    }
+
+    public enum Direction
+    {
+        Up,
+        Down,
+        Left,
+        Right
     }
 }
