@@ -7,14 +7,16 @@ namespace thegame.GameObjects
 {
     public class GameBoard
     {
-        private int[,] _board;
+        public int[,] Board { private set; get; }
 
         public GameBoard(int width, int height)
         {
-            _board = new int[width, height];
+            Board = new int[width, height];
         }
 
-        private static bool TryMoveArray(int[] row, bool isFake, out int[] shiftRow)
+        #region moves
+
+        public static bool TryMoveArray(int[] row, bool isFake, out int[] shiftRow)
         {
             shiftRow = (int[]) row.Clone();
             for (var i = row.Length - 1; i >= 0; i--)
@@ -34,9 +36,10 @@ namespace thegame.GameObjects
             return !isFake;
         }
 
+
         public bool MoveUp(bool isFake = false)
         {
-            var localBoard = (int[,]) _board.Clone();
+            var localBoard = (int[,]) Board.Clone();
             for (var i = 1; i < localBoard.GetLength(0); i++)
             {
                 var row = new int[localBoard.GetLength(1)];
@@ -52,18 +55,35 @@ namespace thegame.GameObjects
 
             if (isFake)
                 return false;
-            _board = (int[,]) localBoard.Clone();
+            Board = (int[,]) localBoard.Clone();
             return true;
         }
 
         public bool MoveLeft(bool isFake = false)
         {
-            throw new NotImplementedException();
+            var localBoard = (int[,]) Board.Clone();
+            for (var i = 1; i < localBoard.GetLength(1); i++)
+            {
+                var row = new int[localBoard.GetLength(0)];
+                for (var j = 0; j < localBoard.GetLength(0); j++)
+                    row[j] = localBoard[i, j];
+
+                if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
+                if (isFake)
+                    return true;
+                for (var j = 0; j < localBoard.GetLength(0); j++)
+                    localBoard[i, j] = row[j];
+            }
+
+            if (isFake)
+                return false;
+            Board = (int[,]) localBoard.Clone();
+            return true;
         }
 
         public bool MoveDown(bool isFake = false)
         {
-            var localBoard = (int[,]) _board.Clone();
+            var localBoard = (int[,]) Board.Clone();
             for (var i = 1; i < localBoard.GetLength(0); i++)
             {
                 var row = new int[localBoard.GetLength(1)];
@@ -79,14 +99,33 @@ namespace thegame.GameObjects
 
             if (isFake)
                 return false;
-            _board = (int[,]) localBoard.Clone();
+            Board = (int[,]) localBoard.Clone();
             return true;
         }
 
         public bool MoveRight(bool isFake = false)
         {
-            throw new NotImplementedException();
+            var localBoard = (int[,]) Board.Clone();
+            for (var i = 1; i < localBoard.GetLength(1); i++)
+            {
+                var row = new int[localBoard.GetLength(0)];
+                for (var j = 0; j < localBoard.GetLength(0); j++)
+                    row[j] = localBoard[i, localBoard.GetLength(0) - j - 1];
+
+                if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
+                if (isFake)
+                    return true;
+                for (var j = 0; j < localBoard.GetLength(0); j++)
+                    localBoard[i, localBoard.GetLength(0) - j - 1] = row[j];
+            }
+
+            if (isFake)
+                return false;
+            Board = (int[,]) localBoard.Clone();
+            return true;
         }
+
+        #endregion
 
         public bool GameOverCheck(bool[] possibleMoves)
         {
@@ -99,17 +138,17 @@ namespace thegame.GameObjects
         }
 
 
-        public void CreateGameCell()
+        public void CreateRandomGameCell()
         {
             var availableCells = new List<Tuple<int, int>>();
-            for (var i = 0; i < _board.GetLength(0); i++)
-            for (var j = 0; j < _board.GetLength(1); j++)
-                if (_board[i, j] == 0)
+            for (var i = 0; i < Board.GetLength(0); i++)
+            for (var j = 0; j < Board.GetLength(1); j++)
+                if (Board[i, j] == 0)
                     availableCells.Add(Tuple.Create(i, j));
 
             var rnd = new Random();
             var (width, height) = availableCells[rnd.Next(availableCells.Count - 1)];
-            _board[width, height] = rnd.Next(4) != 0 ? 1 : 2;
+            Board[width, height] = rnd.Next(4) != 0 ? 1 : 2;
         }
     }
 
