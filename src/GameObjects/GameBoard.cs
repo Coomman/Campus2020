@@ -7,49 +7,40 @@ namespace thegame.GameObjects
 {
     public class GameBoard
     {
-        enum Direction
-        {
-            Up,
-            Down,
-            Left,
-            Right
-        }
-
         private int[,] _board;
 
         public GameBoard(int width, int height)
         {
             _board = new int[width, height];
         }
-        public void MakeMove()
+
+        public bool MoveUp(bool isFake = false)
+        {
+            throw new NotImplementedException();
+        }
+        public bool MoveLeft(bool isFake = false)
+        {
+            throw new NotImplementedException();
+        }
+        public bool MoveDown(bool isFake = false)
+        {
+            throw new NotImplementedException();
+        }
+        public bool MoveRight(bool isFake = false)
         {
             throw new NotImplementedException();
         }
 
-        public bool[] TryAllMoves()
+        public bool GameOverCheck(bool[] possibleMoves)
         {
-            throw new NotImplementedException();
+            possibleMoves[(int) Direction.Up] = MoveUp(true);
+            possibleMoves[(int) Direction.Down] = MoveDown(true);
+            possibleMoves[(int) Direction.Left] = MoveLeft(true);
+            possibleMoves[(int) Direction.Right] = MoveRight(true);
+
+            return possibleMoves.Contains(true);
         }
-        public bool TryMoveUp()
-        {
-            throw new NotImplementedException();
-        }
-        public bool TryMoveLeft()
-        {
-            throw new NotImplementedException();
-        }
-        public bool TryMoveDown()
-        {
-            throw new NotImplementedException();
-        }
-        public bool TryMoveRight()
-        {
-            throw new NotImplementedException();
-        }
-        public bool GameOverCheck(ref bool[] check)
-        {
-            return TryMoveDown(true) || TryMoveUp(true) || TryMoveLeft(true) || TryMoveRight(true);
-        }
+
         public void CreateGameCell()
         {
             var availableCells = new List<Tuple<int, int>>();
@@ -62,5 +53,13 @@ namespace thegame.GameObjects
             var (width, height) = availableCells[rnd.Next(availableCells.Count)];
             _board[width, height] = rnd.Next(4) < 0 ? 1 : 2;
         }
+    }
+
+    public enum Direction
+    {
+        Up,
+        Down,
+        Left,
+        Right
     }
 }
