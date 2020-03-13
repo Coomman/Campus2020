@@ -15,7 +15,7 @@ namespace thegame.Controllers
         public IActionResult Moves(Guid gameId, [FromBody]UserInputForMovesPost userInput)
         {
             var key = (int)userInput.KeyPressed;
-            if (key < 41 && key > 36)
+            if (key == 65 || key == 68 || key == 83 || key == 87)
                 Op.GameTick(userInput.KeyPressed);
 
             return new ObjectResult(Board.ToDto());

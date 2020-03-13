@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using thegame.Models;
 
 namespace thegame.GameObjects
 {
     public class GameBoard
     {
-        public int[,] Board { private set; get; }
+        public int[,] Board { get; }
 
         public int Score { get; private set; }
 
@@ -20,135 +21,134 @@ namespace thegame.GameObjects
         }
 
         #region moves
+        public bool ManageLine(int[] line, bool isFake)
+        {
+            var clone = (int[]) line.Clone();
 
-        //public static bool TryMoveArray(int[] row, bool isFake, out int[] shiftRow)
-        //{
-        //    shiftRow = (int[]) row.Clone();
-        //    for (var i = row.Length - 1; i >= 0; i--)
-        //    {
-        //        if (row[i] == 0 && isFake)
-        //            return true;
-        //        for (var j = i; j < row.Length - 1; j++)
-        //        {
-        //            if (row[j] != row[j + 1]) continue;
-        //            row[j + 1] += 1;
-        //            shiftRow[j] = 0;
-        //            if (isFake)
-        //                return true;
-        //        }
-        //    }
+            var q = new Queue<int>();
+            foreach (int n in line)
+                if (n != 0)
+                    q.Enqueue(n);
 
-        //    return !isFake;
-        //}
+            for (int i = 0; i < line.Length; i++)
+            {
+                line[i] = 0;
+            }
 
+            if (q.Count == 0)
+                return false;
 
-        //public bool MoveUp(bool isFake = false)
-        //{
-        //    var localBoard = (int[,]) Board.Clone();
-        //    for (var i = 1; i < localBoard.GetLength(0); i++)
-        //    {
-        //        var row = new int[localBoard.GetLength(1)];
-        //        for (var j = 0; j < localBoard.GetLength(1); j++)
-        //            row[j] = localBoard[j, i];
+            int index = 0;
+            int cur = line[index] = q.Dequeue();
 
-        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-        //        if (isFake)
-        //            return true;
-        //        for (var j = 0; j < localBoard.GetLength(1); j++)
-        //            localBoard[j, i] = row[j];
-        //    }
+            while(q.Count != 0)
+            {
+                var next = q.Dequeue();
+                if (cur == next)
+                {
+                    line[index++] = cur + 1;
+                    
+                    if(!isFake)
+                        Score += (int) Math.Pow(2, line[index - 1]);
 
-        //    if (isFake)
-        //        return false;
-        //    Board = (int[,]) localBoard.Clone();
-        //    return true;
-        //}
+                    if (q.Count == 0)
+                        break;
 
-        //public bool MoveLeft(bool isFake = false)
-        //{
-        //    var localBoard = (int[,]) Board.Clone();
-        //    for (var i = 1; i < localBoard.GetLength(1); i++)
-        //    {
-        //        var row = new int[localBoard.GetLength(0)];
-        //        for (var j = 0; j < localBoard.GetLength(0); j++)
-        //            row[j] = localBoard[i, j];
+                    cur = line[index] = q.Dequeue();
+                    continue;
+                }
 
-        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-        //        if (isFake)
-        //            return true;
-        //        for (var j = 0; j < localBoard.GetLength(0); j++)
-        //            localBoard[i, j] = row[j];
-        //    }
+                line[index++] = cur;
+                cur = line[index] = next;
+            }
 
-        //    if (isFake)
-        //        return false;
-        //    Board = (int[,]) localBoard.Clone();
-        //    return true;
-        //}
-
-        //public bool MoveDown(bool isFake = false)
-        //{
-        //    var localBoard = (int[,]) Board.Clone();
-        //    for (var i = 1; i < localBoard.GetLength(0); i++)
-        //    {
-        //        var row = new int[localBoard.GetLength(1)];
-        //        for (var j = 0; j < localBoard.GetLength(1); j++)
-        //            row[j] = localBoard[localBoard.GetLength(1) - j - 1, i];
-
-        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-        //        if (isFake)
-        //            return true;
-        //        for (var j = 0; j < localBoard.GetLength(1); j++)
-        //            localBoard[localBoard.GetLength(1) - j - 1, i] = row[j];
-        //    }
-
-        //    if (isFake)
-        //        return false;
-        //    Board = (int[,]) localBoard.Clone();
-        //    return true;
-        //}
-
-        //public bool MoveRight(bool isFake = false)
-        //{
-        //    var localBoard = (int[,]) Board.Clone();
-        //    for (var i = 1; i < localBoard.GetLength(1); i++)
-        //    {
-        //        var row = new int[localBoard.GetLength(0)];
-        //        for (var j = 0; j < localBoard.GetLength(0); j++)
-        //            row[j] = localBoard[i, localBoard.GetLength(0) - j - 1];
-
-        //        if (!TryMoveArray(row, isFake, out var shiftedRow)) continue;
-        //        if (isFake)
-        //            return true;
-        //        for (var j = 0; j < localBoard.GetLength(0); j++)
-        //            localBoard[i, localBoard.GetLength(0) - j - 1] = row[j];
-        //    }
-
-        //    if (isFake)
-        //        return false;
-        //    Board = (int[,]) localBoard.Clone();
-        //    return true;
-        //}
+            return line.SequenceEqual(clone);
+        }
 
         public bool MoveUp(bool isFake = false)
         {
-            Board = new int[Width, Height];
-            return true;
-        }
-        public bool MoveRight(bool isFake = false)
-        {
-            Board = new int[Width, Height];
-            return true;
+            var locked = false;
+
+            for (int i = 0; i < Width; i++)
+            {
+                var arr = new int[Height];
+                for (int j = 0; j < Height; j++)
+                    arr[j] = Board[i, j];
+
+                locked |= ManageLine(arr, isFake);
+
+                if (isFake)
+                    continue;
+
+                for (int j = 0; j < Height; j++)
+                    Board[i, j] = arr[j];
+            }
+
+            return locked;
         }
         public bool MoveLeft(bool isFake = false)
         {
-            Board = new int[Width, Height];
-            return true;
+            var locked = false;
+
+            for (int i = 0; i < Height; i++)
+            {
+                var arr = new int[Width];
+                for (int j = 0; j < Width; j++)
+                    arr[j] = Board[j, i];
+
+                locked |= ManageLine(arr, isFake);
+
+                if (isFake)
+                    continue;
+
+                for (int j = 0; j < Width; j++)
+                    Board[j, i] = arr[j];
+            }
+
+            return locked;
+        }
+        public bool MoveRight(bool isFake = false)
+        {
+            var locked = false;
+
+            for (int i = 0; i < Height; i++)
+            {
+                var arr = new int[Width];
+                for (int j = 0; j < Width; j++)
+                    arr[j] = Board[Width - j - 1, i];
+
+                locked |= ManageLine(arr, isFake);
+
+                if (isFake)
+                    continue;
+
+                for (int j = 0; j < Width; j++)
+                    Board[Width - j - 1, i] = arr[j];
+
+            }
+
+            return locked;
         }
         public bool MoveDown(bool isFake = false)
         {
-            Board = new int[Width, Height];
-            return false;
+            var locked = false;
+
+            for (int i = 0; i < Width; i++)
+            {
+                var arr = new int[Height];
+                for (int j = 0; j < Height; j++)
+                    arr[j] = Board[i, Height - j - 1];
+
+                locked |= ManageLine(arr, isFake);
+
+                if (isFake)
+                    continue;
+
+                for (int j = 0; j < Height; j++)
+                    Board[i, j] = arr[Height - j - 1];
+            }
+
+            return locked;
         }
 
         #endregion
@@ -157,7 +157,6 @@ namespace thegame.GameObjects
         {
             return !MoveUp(true) && !MoveDown(true) && !MoveLeft(true) && !MoveRight(true);
         }
-
 
         public void CreateRandomGameCell()
         {
