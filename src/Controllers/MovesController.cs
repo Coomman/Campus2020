@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using thegame.Models;
 using thegame.Services;
 
+using static thegame.Services.GamesRepo;
+
 namespace thegame.Controllers
 {
     [Route("api/games/{gameId}/moves")]
@@ -12,11 +14,9 @@ namespace thegame.Controllers
         [HttpPost]
         public IActionResult Moves(Guid gameId, [FromBody]UserInputForMovesPost userInput)
         {
-            var game = TestData.AGameDto(userInput.ClickedPos ?? new Vec(1, 1));
-            if (userInput.ClickedPos != null)
-                game.Cells.First(c => c.Type == "color4").Pos = userInput.ClickedPos;
+            Op.GameTick(userInput.KeyPressed);
 
-            return new ObjectResult(game);
+            return new ObjectResult(Board.ToDto());
         }
     }
 }
