@@ -7,7 +7,7 @@ namespace thegame.GameObjects
 {
     public class GameBoard
     {
-        private readonly int[,] _board;
+        private int[,] _board;
 
         public int Score { get; private set; }
 
